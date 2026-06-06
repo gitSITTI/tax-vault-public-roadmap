@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -20,6 +21,25 @@ FORBIDDEN_MARKERS = [
     "real bank statement",
 ]
 
+FORBIDDEN_INCOMPLETE_MARKERS = [
+    r"\bTODO\b",
+    r"\bTBD\b",
+    r"\bstub\b",
+    r"\bplaceholder\b",
+    r"\bcoming soon\b",
+    r"\bto be defined\b",
+    r"\bto be determined\b",
+]
+
+MIN_LINES = {
+    "README.md": 20,
+    "ROADMAP.md": 20,
+    "CONTRIBUTING.md": 15,
+    "SECURITY.md": 15,
+    "docs/LIBRARY_REVIEW.md": 15,
+    "docs/PROMPT_INJECTION_TESTS.md": 15,
+}
+
 
 def main() -> int:
     problems: list[str] = []
@@ -32,10 +52,17 @@ def main() -> int:
         text = path.read_text(encoding="utf-8")
         if not text.strip():
             problems.append(f"empty {name}")
+        line_count = len(text.splitlines())
+        minimum = MIN_LINES.get(name, 0)
+        if line_count < minimum:
+            problems.append(f"thin {name}: {line_count} lines, expected at least {minimum}")
         lower = text.lower()
         for marker in FORBIDDEN_MARKERS:
             if marker in lower:
                 problems.append(f"forbidden marker {marker!r} in {name}")
+        for marker in FORBIDDEN_INCOMPLETE_MARKERS:
+            if re.search(marker, text, re.IGNORECASE):
+                problems.append(f"incomplete-document marker {marker!r} in {name}")
 
     if problems:
         print("Public docs validation failed:")
@@ -49,4 +76,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

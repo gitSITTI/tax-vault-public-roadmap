@@ -29,3 +29,12 @@ This repository intentionally contains no private data and no private implementa
 - Prompt-injection test cases.
 - Open-source library reviews.
 - Documentation improvements.
+
+## Project Rules
+
+- Public artifacts must use synthetic examples only.
+- Every extracted value in future code must resolve to a source citation.
+- Every parser proposal must include a license and security review.
+- Every AI workflow must treat document content as untrusted data.
+- Every public issue should be reproducible without private documents.
+- Any accidental private content must be removed immediately and treated as a security incident.
