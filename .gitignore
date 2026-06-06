@@ -1,0 +1,11 @@
+.env
+.env.*
+data/
+private-data/
+*.pdf
+*.tax*
+*.sqlite
+*.db
+node_modules/
+__pycache__/
+
