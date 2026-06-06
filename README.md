@@ -1,4 +1,4 @@
-# SosaTax Vault Public Roadmap
+# Tax Vault Public Roadmap
 
 Public-safe roadmap for a local-first tax and financial-document catalog.
 
@@ -29,4 +29,3 @@ This repository intentionally contains no private data and no private implementa
 - Prompt-injection test cases.
 - Open-source library reviews.
 - Documentation improvements.
-
