@@ -13,6 +13,21 @@ This repository intentionally contains no private data and no private implementa
 - Prompt-injection-resistant document QA.
 - Synthetic fixtures only.
 
+## Public-Safe Architecture
+
+```mermaid
+flowchart LR
+  A["Synthetic documents"] --> B["Quarantine and manifest"]
+  B --> C["Extraction adapters"]
+  C --> D["SQL source of record"]
+  C --> E["Vector index"]
+  D --> F["Validation and review"]
+  E --> F
+  F --> G["Dashboard and read-only tools"]
+```
+
+The public version should prove the architecture with fake documents and reproducible fixtures. It should not assume access to private storage, private accounts, private tax files, or private deployment environments.
+
 ## Non-Goals
 
 - No real user tax files.
@@ -20,6 +35,16 @@ This repository intentionally contains no private data and no private implementa
 - No account numbers.
 - No secrets.
 - No private deployment details.
+- No public examples derived from private OCR, embeddings, or screenshots.
+
+## Contributor Workflow
+
+1. Pick a public issue that uses synthetic data.
+2. Add or update a synthetic fixture when behavior changes.
+3. Include source-citation metadata in outputs.
+4. Run public docs validation.
+5. State whether the change runs offline.
+6. State whether any dependency performs network calls.
 
 ## Contribution Areas
 
@@ -38,3 +63,13 @@ This repository intentionally contains no private data and no private implementa
 - Every AI workflow must treat document content as untrusted data.
 - Every public issue should be reproducible without private documents.
 - Any accidental private content must be removed immediately and treated as a security incident.
+
+## Validation
+
+Run:
+
+```powershell
+python scripts\validate_public_docs.py
+```
+
+Public docs should also be scanned before publishing for private names, private endpoints, account-like values, real documents, and secrets.
