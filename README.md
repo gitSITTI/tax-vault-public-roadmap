@@ -79,6 +79,8 @@ python -m unittest discover -s tests  # run the tests
 
 See `docs/TAX_YEAR_READINESS.md` for details and `docs/TRI_REPO_PARITY.md` for
 the shared-core rule that keeps this capability in sync with the sibling repos.
+Downstream private vaults reuse this tested core via
+`docs/DOWNSTREAM_VAULT_REUSE.md`.
 
 ## Validation
 
