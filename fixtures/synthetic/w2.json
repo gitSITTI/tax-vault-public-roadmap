@@ -1,0 +1,13 @@
+{
+  "doc_id": "syn-w2-0001",
+  "kind": "synthetic_w2",
+  "label": "Synthetic W-2 (ACME SYNTHETIC LLC)",
+  "tax_year": 2025,
+  "employee": "PUBLIC SAMPLE TAXPAYER",
+  "ssn": "000-00-0000",
+  "fields": {
+    "wages": { "value": 72000.0, "locator": "Box 1 wages, tips, other compensation" },
+    "federal_withholding": { "value": 9100.0, "locator": "Box 2 federal income tax withheld" }
+  },
+  "untrusted_text": "Employer note: synthetic sample document for public testing only."
+}

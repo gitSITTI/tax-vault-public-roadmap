@@ -1,0 +1,11 @@
+{
+  "doc_id": "syn-1040-0001",
+  "kind": "synthetic_1040",
+  "label": "Synthetic Form 1040",
+  "tax_year": 2025,
+  "fields": {
+    "total_income": { "value": 84000.0, "locator": "Line 9 total income" },
+    "federal_withholding": { "value": 9100.0, "locator": "Line 25 federal income tax withheld" }
+  },
+  "expected_forms": ["synthetic_w2", "synthetic_1099nec", "synthetic_1099int"]
+}
