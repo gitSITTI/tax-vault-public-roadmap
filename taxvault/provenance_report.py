@@ -51,7 +51,9 @@ _REDACTION_PATTERNS = [
     (re.compile(r"\b\d{3}-\d{2}-\d{4}\b"), "[redacted-ssn]"),
     # Long digit runs that look like account / card numbers (12+ digits)
     (re.compile(r"\b\d{12,}\b"), "[redacted-number]"),
-    # API-key / token-like runs of base64/hex (24+ chars)
+    # API-key / token-like runs of base64/hex (24+ chars). Intentionally
+    # aggressive: this may also mask benign long tokens (e.g. git SHAs). It
+    # errs toward over-redaction so secrets never leak into a log line.
     (re.compile(r"\b[A-Za-z0-9_\-]{24,}\b"), "[redacted-token]"),
     # key=value secret assignments
     (re.compile(r"(?i)\b(api[_-]?key|secret|token|password|passphrase)\s*[:=]\s*\S+"),
@@ -243,5 +245,6 @@ def _render_value(value: object) -> str:
         return f"{value:,.2f}"
     if isinstance(value, int):
         return f"{value:,}"
-    # Escape pipe so untrusted text cannot break the Markdown table.
-    return str(value).replace("|", "\\|")
+    # Escape pipe and collapse newlines so untrusted text cannot break the
+    # Markdown table layout.
+    return str(value).replace("|", "\\|").replace("\r", " ").replace("\n", " ")

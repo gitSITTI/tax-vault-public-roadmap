@@ -112,11 +112,10 @@ def reconcile(documents: List[dict]) -> ReconciliationResult:
         raise ValueError("more than one return document supplied")
     ret = returns[0] if returns else None
 
-    tax_year = None
-    for doc in documents:
-        if doc.get("tax_year") is not None:
-            tax_year = doc["tax_year"]
-            break
+    years = {doc["tax_year"] for doc in documents if doc.get("tax_year") is not None}
+    if len(years) > 1:
+        raise ValueError(f"documents span multiple tax years: {sorted(years)}")
+    tax_year = next(iter(years)) if years else None
 
     result = ReconciliationResult(tax_year=tax_year, documents=documents)
 
