@@ -64,6 +64,24 @@ The public version should prove the architecture with fake documents and reprodu
 - Every public issue should be reproducible without private documents.
 - Any accidental private content must be removed immediately and treated as a security incident.
 
+## Synthetic Prototype
+
+A runnable, offline, synthetic-only prototype of the tax-year readiness
+workflow now ships in this repo. It reconciles a synthetic W-2 and 1099-NEC
+against a synthetic 1040, reports missing-form readiness gaps, and renders a
+provenance-cited Markdown report where every value cites its source.
+
+```bash
+python -m taxvault.taxreport          # render the readiness report
+python -m taxvault.taxreport --json   # machine-readable summary
+python -m unittest discover -s tests  # run the tests
+```
+
+See `docs/TAX_YEAR_READINESS.md` for details and `docs/TRI_REPO_PARITY.md` for
+the shared-core rule that keeps this capability in sync with the sibling repos.
+Downstream private vaults reuse this tested core via
+`docs/DOWNSTREAM_VAULT_REUSE.md`.
+
 ## Validation
 
 Run:
