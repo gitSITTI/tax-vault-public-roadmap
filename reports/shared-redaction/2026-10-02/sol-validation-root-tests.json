@@ -1,0 +1,52 @@
+{
+  "validator": "GPT-5.6 Sol",
+  "producer": "Codex root",
+  "mode": "read-only source challenge and independent offline rerun",
+  "verdicts": {
+    "OPS-01": "CONFIRMED",
+    "OPS-02": "CONFIRMED",
+    "OPS-03": "CONFIRMED",
+    "OPS-04": "CONFIRMED",
+    "OPS-05": "CONFIRMED",
+    "OPS-06": "CONFIRMED",
+    "APP-07": "CONFIRMED"
+  },
+  "observations": [
+    {
+      "command": "python -m pytest -q -p no:cacheprovider tests/test_code_audit_operations.py tests/test_task_session_dashboard.py tools/tests/test_provenance_redaction.py tools/tests/test_strategy_readiness.py",
+      "cwd": "C:\\Users\\edsos\\.codex\\worktrees\\code-audit-repairs\\tradingview-codex-onboarding-agent",
+      "returncode": 0,
+      "summary": "40 passed in 3.84s"
+    },
+    {
+      "command": "python -m pytest -q -p no:cacheprovider tests/test_provenance_report.py tests/test_reconcile.py tests/test_shared_redaction_regression.py",
+      "cwd": "C:\\Users\\edsos\\.codex\\worktrees\\code-audit-repairs\\parity\\tax-vault-public-roadmap",
+      "returncode": 0,
+      "summary": "22 passed in 1.52s"
+    },
+    {
+      "command": "python -m pytest -q -p no:cacheprovider tools/tests/test_provenance_redaction.py",
+      "cwd": "C:\\Users\\edsos\\.codex\\worktrees\\code-audit-repairs\\parity\\ConfluenceOS",
+      "returncode": 0,
+      "summary": "3 passed in 1.33s"
+    }
+  ],
+  "parity": {
+    "shared_sha256": "8fd7c3e34f1f89c62fb9bbe6386988381bb8ea7291125f49805f825bc8112785",
+    "shared_bytes": 10567,
+    "all_three_byte_identical": true,
+    "tax_base_head": "f453164e1f03be0a56f98ed275c32024ac440948",
+    "tax_remote": "https://github.com/gitSITTI/tax-vault-public-roadmap.git",
+    "confluence_base_head": "e20083854b16daaceb7bfadc58214c63c734a66f",
+    "confluence_remote": "https://github.com/gitSITTI/ConfluenceOS.git",
+    "task_tables_contiguous_after_producer_correction": true,
+    "final_index_review_required": true,
+    "generated_cache_exclusion_unverified_until_staging": true
+  },
+  "live_actions": false,
+  "limits": [
+    "No live service readiness, broker behavior, TradingView/CDP state, or deployment was tested.",
+    "Repository refresh behavior used fake Git results and does not prove current remote state.",
+    "Final staged and committed path contents were not available for this validation."
+  ]
+}

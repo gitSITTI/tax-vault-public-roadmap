@@ -23,6 +23,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Dict, Iterable, List, Optional
 import re
+import json
+from urllib.parse import unquote
 
 __all__ = [
     "ProvenanceError",
@@ -31,6 +33,7 @@ __all__ = [
     "Section",
     "Report",
     "redact",
+    "redact_object",
     "injection_score",
     "is_probable_injection",
 ]
@@ -61,15 +64,52 @@ _REDACTION_PATTERNS = [
 ]
 
 
+_SECRET_KEY = re.compile(r"(?i)(?:api[-_]?key|access[-_]?token|refresh[-_]?token|secret|token|password|passwd|passphrase|authorization|client[-_]?secret)")
+_SECRET_ASSIGNMENT = re.compile(
+    r'''(?ix)(?P<prefix>["']?\b(?:api[-_]?key|access[-_]?token|refresh[-_]?token|secret|token|password|passwd|passphrase|authorization|client[-_]?secret)["']?\s*[:=]\s*)
+    (?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|[^\s&,;}]+)'''
+)
+
+
+def redact_object(value, *, mask_identifiers: bool = True):
+    """Mask secret fields before serializing a structured value; leave metrics typed."""
+    if isinstance(value, dict):
+        return {key: "[redacted]" if _SECRET_KEY.fullmatch(str(key)) else redact_object(item, mask_identifiers=mask_identifiers)
+                for key, item in value.items()}
+    if isinstance(value, (tuple, list)):
+        return [redact_object(item, mask_identifiers=mask_identifiers) for item in value]
+    if isinstance(value, str):
+        return _redact_text(value, mask_identifiers=mask_identifiers)
+    return value
+
+
+def _redact_text(text: str, *, mask_identifiers: bool = True) -> str:
+    # Cover URL userinfo and percent-encoded query keys without decoding the URL
+    # itself (which would alter benign report text).
+    out = re.sub(r"(?i)(https?://)[^\s/@]+@", r"\1[redacted]@", text)
+    out = re.sub(r"([?&])([^=&#\s]+)=([^&#\s]*)",
+                 lambda m: m[1] + m[2] + "=" + ("[redacted]" if _SECRET_KEY.fullmatch(unquote(m[2])) else m[3]), out)
+    out = re.sub(r"(?i)(authorization\s*[:=]\s*)(?:bearer|basic)\s+[^\s,;]+", r"\1[redacted]", out)
+    out = _SECRET_ASSIGNMENT.sub(lambda m: m["prefix"] + '"[redacted]"', out)
+    if mask_identifiers:
+        for pattern, replacement in _REDACTION_PATTERNS[:-1]:
+            out = pattern.sub(replacement, out)
+    return out
+
+
 def redact(text: str) -> str:
     """Return ``text`` with secret-like and identity-like tokens masked.
 
     Always call this before writing source-derived text to a log.
     """
     out = str(text)
-    for pattern, replacement in _REDACTION_PATTERNS:
-        out = pattern.sub(replacement, out)
-    return out
+    try:
+        value = json.loads(out)
+    except (ValueError, TypeError):
+        return _redact_text(out)
+    if isinstance(value, (dict, list)):
+        return json.dumps(redact_object(value), ensure_ascii=False, allow_nan=False)
+    return _redact_text(out)
 
 
 # Phrases that commonly appear in prompt-injection payloads. Presence raises a
