@@ -16,3 +16,8 @@
   byte-identical across the repos; each repo layers a domain module on top.
 - A shared-capability change is not done until it has been applied to every
   repo it sensibly applies to. See `docs/TRI_REPO_PARITY.md`.
+
+## Progressive context
+On session start, read `current.md` then `contextmap.md` before trusting chat history.
+Before ending a session, update `current.md` (Now + Next action). Chat is not the system of record.
+Repo skill: `.cursor/skills/progressive-context/SKILL.md`

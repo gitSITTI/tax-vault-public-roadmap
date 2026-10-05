@@ -1,0 +1,19 @@
+name: Progressive context reminder
+on:
+  pull_request:
+    paths-ignore:
+      - '**/*.md'
+      - '.cursor/**'
+      - '.github/workflows/progressive-context-reminder.yml'
+jobs:
+  current-md:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Require current.md on code PRs
+        run: |
+          if [ ! -f current.md ]; then
+            echo "::error::current.md missing — seed progressive-context pack so new sessions keep follow-through"
+            exit 1
+          fi
+          echo "current.md present"
